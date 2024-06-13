@@ -1,4 +1,6 @@
-#include <STR.h>
+#include <Settingator.h>
+#include <MiscDef.h>
+#include <ESPNowCommunicator.h>
 #include <FastLED.h>
 #include <Arduino.h>
 
@@ -128,8 +130,10 @@ void UpdateAnimation()
 
 void setup()
 {
+    Serial.begin(9600);
+    
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-    INIT_DEFAULT_SETTINGATOR();
+    STR.SetCommunicator(ESPNowCTR::CreateInstanceDiscoverableWithSSID("Desk"));
     
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
@@ -140,7 +144,7 @@ void setup()
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN GOOD", [](){ animation = GREEN_GOOD; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED BAD", [](){ animation = RED_BAD; });
     refPower = STR.AddSetting(Setting::Type::Label, answerPowLabel, sizeof(answerPowLabel), "Arabe Power");
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "Answer Pow +1", [](){ answerPow += 1;
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "Answer Pow +1", [](){ DEBUG_PRINT_LN("Callback");answerPow += 1;
                                                                                 answerPowLabel = itoa(answerPow, answerPowLabel, 10);
                                                                                 STR.UpdateSetting(refPower, (unsigned char*)answerPowLabel, sizeof(answerPowLabel));});
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "Answer Pow -1", [](){ answerPow -= 1;
@@ -148,7 +152,6 @@ void setup()
                                                                                 STR.UpdateSetting(refPower, (unsigned char*)answerPowLabel, sizeof(answerPowLabel));});
 
     answerPowLabel = itoa(answerPow, answerPowLabel, 10);
-    Serial.begin(9600);
 }
 
 void loop()
