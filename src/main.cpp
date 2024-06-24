@@ -25,6 +25,31 @@ uint8_t answerPow = 3;
 char*   answerPowLabel = (char*)malloc(18);
 uint8_t refPower = 0;
 
+int state = LOW;
+char* digitalLabel = (char*)malloc(5);
+uint8_t refDigitalLabel = 0;
+
+uint16_t voltage = 512;
+char* analogLabel = (char*)malloc(5);
+uint8_t refAnalogLabel = 0;
+
+#define STATE_PIN 34
+
+ulong stateTimer = millis();
+
+void UpdateState()
+{
+    int newState = digitalRead(STATE_PIN);
+    if (newState == HIGH && state == LOW)
+    {
+        STR.SendDirectSettingUpdate(0x02);
+        STR.SendNotif(0x05);
+    }
+    state = newState;
+    
+
+}
+
 void NoAnimation()
 {
     for (int i = 0; i < NUM_LEDS; i++)
@@ -131,15 +156,19 @@ void UpdateAnimation()
 void setup()
 {
     Serial.begin(9600);
+
+    pinMode(STATE_PIN, INPUT);
+
     
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
     STR.SetCommunicator(ESPNowCTR::CreateInstanceDiscoverableWithSSID("Desk"));
     
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED ACCEL LOADING", [](){ animation = RED_ACCEL_LOADING; });
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN LOADING", [](){ animation = GREEN_LOADING; });
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE FROZEN", [](){ animation = BLUE_FROZEN; });
+    refDigitalLabel = STR.AddSetting(Setting::Type::Label, digitalLabel, sizeof(digitalLabel), "State");
+    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
+    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
+    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED ACCEL LOADING", [](){ animation = RED_ACCEL_LOADING; });
+    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN LOADING", [](){ animation = GREEN_LOADING; });
+    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE FROZEN", [](){ animation = BLUE_FROZEN; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED FROZEN", [](){ animation = RED_FROZEN; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN GOOD", [](){ animation = GREEN_GOOD; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED BAD", [](){ animation = RED_BAD; });
@@ -151,6 +180,7 @@ void setup()
                                                                                 answerPowLabel = itoa(answerPow, answerPowLabel, 10);
                                                                                 STR.UpdateSetting(refPower, (unsigned char*)answerPowLabel, sizeof(answerPowLabel));});
 
+
     answerPowLabel = itoa(answerPow, answerPowLabel, 10);
 }
 
@@ -159,4 +189,5 @@ void loop()
     STR.Update();
     UpdateAnimation();
     FastLED.show();
+    UpdateState();
 }
