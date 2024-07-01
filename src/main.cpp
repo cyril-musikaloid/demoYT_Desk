@@ -1,6 +1,7 @@
 #include <Settingator.h>
 #include <MiscDef.h>
 #include <ESPNowCommunicator.h>
+#include <HardwareSerialCommunicator.h>
 #include <FastLED.h>
 #include <Arduino.h>
 
@@ -45,9 +46,12 @@ void UpdateState()
         STR.SendDirectSettingUpdate(0x02);
         STR.SendNotif(0x05);
     }
-    state = newState;
-    
 
+    if (state != newState)
+    {
+        STR.UpdateSetting(refAnalogLabel, (byte*)(newState ? "HIGH" : "LOW "), 4);
+        state = newState;    
+    }
 }
 
 void NoAnimation()
@@ -155,14 +159,13 @@ void UpdateAnimation()
 
 void setup()
 {
-    Serial.begin(9600);
-
     pinMode(STATE_PIN, INPUT);
 
     
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
     STR.SetCommunicator(ESPNowCTR::CreateInstanceDiscoverableWithSSID("Desk"));
-    
+    //STR.SetCommunicator(HardwareSerialCTR::CreateInstance(9600));
+
     refDigitalLabel = STR.AddSetting(Setting::Type::Label, digitalLabel, sizeof(digitalLabel), "State");
     //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
     //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
