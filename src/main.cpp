@@ -167,11 +167,11 @@ void setup()
     //STR.SetCommunicator(HardwareSerialCTR::CreateInstance(9600));
 
     refDigitalLabel = STR.AddSetting(Setting::Type::Label, digitalLabel, sizeof(digitalLabel), "State");
-    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
-    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
-    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED ACCEL LOADING", [](){ animation = RED_ACCEL_LOADING; });
-    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN LOADING", [](){ animation = GREEN_LOADING; });
-    //STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE FROZEN", [](){ animation = BLUE_FROZEN; });
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "NO ANIMATION", [](){ animation = NO_ANIMATION; });
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE LOADING", [](){ animation = BLUE_LOADING; });
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED ACCEL LOADING", [](){ animation = RED_ACCEL_LOADING; });
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN LOADING", [](){ animation = GREEN_LOADING; });
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "BLUE FROZEN", [](){ animation = BLUE_FROZEN; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED FROZEN", [](){ animation = RED_FROZEN; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN GOOD", [](){ animation = GREEN_GOOD; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED BAD", [](){ animation = RED_BAD; });
