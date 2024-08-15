@@ -40,6 +40,7 @@ char* analogLabel = (char*)malloc(5);
 uint8_t refAnalogLabel = 0;
 
 #define STATE_PIN 4
+#define LASER_NOTIF 0x05
 
 ulong stateTimer = millis();
 
@@ -49,7 +50,7 @@ void UpdateState()
     if (newState == HIGH && state == LOW)
     {
         STR.SendDirectSettingUpdate(0x02);
-        STR.SendNotif(0x05);
+        STR.SendNotif(LASER_NOTIF);
     }
 
     if (state != newState)
@@ -162,9 +163,20 @@ void UpdateAnimation()
     AnimArray[animation]();
 }
 
+void ConfigureButtonPin(uint8_t pin)
+{
+    pinMode(pin, INPUT_PULLDOWN);
+    attachInterruptArg(pin, [](void* pin){ STR.SendNotif(*(uint8_t*)pin); }, &pin, RISING);
+}
+
 void setup()
 {
     pinMode(STATE_PIN, INPUT);
+
+    ConfigureButtonPin(RED);
+    ConfigureButtonPin(BLUE);
+    ConfigureButtonPin(GREEN);
+    ConfigureButtonPin(YELLOW);
 
     
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
