@@ -5,7 +5,12 @@
 #include <FastLED.h>
 #include <Arduino.h>
 
-#define DATA_PIN    16
+#define RED         13
+#define GREEN       12
+#define YELLOW      14
+#define BLUE        27
+
+#define DATA_PIN    26
 #define NUM_LEDS    52
 
 CRGB leds[NUM_LEDS];
@@ -34,7 +39,7 @@ uint16_t voltage = 512;
 char* analogLabel = (char*)malloc(5);
 uint8_t refAnalogLabel = 0;
 
-#define STATE_PIN 34
+#define STATE_PIN 4
 
 ulong stateTimer = millis();
 
