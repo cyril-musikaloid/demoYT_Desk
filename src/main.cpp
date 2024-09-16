@@ -25,7 +25,7 @@ CRGB leds[NUM_LEDS];
 #define GREEN_GOOD          6
 #define RED_BAD             7
 
-uint8_t animation = NO_ANIMATION;
+uint8_t animation = BLUE_LOADING;
 
 uint8_t answerPow = 3;
 char*   answerPowLabel = (char*)malloc(18);
@@ -163,21 +163,41 @@ void UpdateAnimation()
     AnimArray[animation]();
 }
 
-void ConfigureButtonPin(uint8_t pin)
+void redButtonInterruption()
 {
-    pinMode(pin, INPUT_PULLDOWN);
-    attachInterruptArg(pin, [](void* pin){ STR.SendNotif(*(uint8_t*)pin); }, &pin, RISING);
+    STR.SendNotif(RED);
+}
+
+void yellowButtonInterruption()
+{
+    STR.SendNotif(YELLOW);
+}
+
+void greenButtonInterruption()
+{
+    STR.SendNotif(GREEN);
+}
+
+void blueButtonInterrution()
+{
+    STR.SendNotif(BLUE);
 }
 
 void setup()
 {
     pinMode(STATE_PIN, INPUT);
+    
+    pinMode(RED, INPUT_PULLDOWN);
+    attachInterrupt(RED, &redButtonInterruption, RISING);
 
-    ConfigureButtonPin(RED);
-    ConfigureButtonPin(BLUE);
-    ConfigureButtonPin(GREEN);
-    ConfigureButtonPin(YELLOW);
+    pinMode(GREEN, INPUT_PULLDOWN);
+    attachInterrupt(GREEN, &greenButtonInterruption, RISING);
 
+    pinMode(YELLOW, INPUT_PULLDOWN);
+    attachInterrupt(YELLOW, &yellowButtonInterruption, RISING);
+
+    pinMode(BLUE, INPUT_PULLDOWN);
+    attachInterrupt(BLUE, &blueButtonInterrution, RISING);
     
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
     STR.SetCommunicator(ESPNowCTR::CreateInstanceDiscoverableWithSSID("Desk"));
