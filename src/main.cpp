@@ -212,11 +212,11 @@ void setup()
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED FROZEN", [](){ animation = RED_FROZEN; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "GREEN GOOD", [](){ animation = GREEN_GOOD; });
     STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "RED BAD", [](){ animation = RED_BAD; });
-    refPower = STR.AddSetting(Setting::Type::Label, answerPowLabel, sizeof(answerPowLabel), "Arabe Power");
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "Answer Pow +1", [](){ DEBUG_PRINT_LN("Callback");answerPow += 1;
+    refPower = STR.AddSetting(Setting::Type::Label, answerPowLabel, sizeof(answerPowLabel), "LED Power");
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "LED Pow +1", [](){ DEBUG_PRINT_LN("Callback");answerPow += 1;
                                                                                 answerPowLabel = itoa(answerPow, answerPowLabel, 10);
                                                                                 STR.UpdateSetting(refPower, (unsigned char*)answerPowLabel, sizeof(answerPowLabel));});
-    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "Answer Pow -1", [](){ answerPow -= 1;
+    STR.AddSetting(Setting::Type::Trigger, nullptr, 0, "LED Pow -1", [](){ answerPow -= 1;
                                                                                 answerPowLabel = itoa(answerPow, answerPowLabel, 10);
                                                                                 STR.UpdateSetting(refPower, (unsigned char*)answerPowLabel, sizeof(answerPowLabel));});
 
